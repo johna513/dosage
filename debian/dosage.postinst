@@ -1,0 +1,9 @@
+#!/bin/sh
+#DEBHELPER#
+
+# This is really awful, but we don't have much choice; we need to ensure that
+# the plugin cache will be written out with a later timestamp than the plugin
+# source files.
+sleep 1
+
+python -c 'from twisted.plugin import IPlugin, getPlugins; from dosagelib import plugins; list(getPlugins(IPlugin, plugins))'

@@ -1,0 +1,4 @@
+version=2
+
+http://slipgate.za.net/dosage \
+    (?:.*/)?dosage-([\d\.]*).tar.gz

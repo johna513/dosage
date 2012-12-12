@@ -1,0 +1,23 @@
+Source: dosage
+Section: net
+Priority: optional
+Maintainer: Tristan Seligmann <mithrandi@mithrandi.net>
+Build-Depends-Indep: python-dev, python-twisted-core, python-zopeinterface
+Build-Depends: cdbs (>= 0.4.41), debhelper (>= 5.0.37.1), python (>= 2.3.5-7), python-central (>= 0.6.0)
+Standards-Version: 3.8.0
+XS-Python-Version: >= 2.4
+Homepage: http://slipgate.za.net/dosage
+
+Package: dosage
+Architecture: all
+Depends: ${python:Depends}, python-twisted-core, python-zopeinterface
+Provides: ${python:Provides}
+XB-Python-Version: ${python:Versions}
+Description: powerful webcomic downloader / archiver
+ Dosage has a modular comic module infrastructure that allows new
+ webcomics to be easily supported, but does not limit it to supporting
+ webcomics with simple site layouts. Dosage can retrieve just the latest
+ strip in a comic, catch-up to the last strip downloaded, or download a
+ strip for a particular date/index (except if the webcomic's site layout
+ makes this impossible).
+ .
