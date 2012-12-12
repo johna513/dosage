@@ -155,8 +155,71 @@ class HtmlEventHandler(EventHandler):
         self.html.close()
 
 
+class EHtmlEventHandler(EventHandler):
+    def fnFromDate(self, date):
+        fn = time.strftime('comics-%Y%m%d.html', date)
+        fn = os.path.join(self.basepath, 'html', fn)
+        fn = os.path.abspath(fn)
+        return fn
+
+    def start(self):
+        today = time.time()
+        yesterday = today - 86400
+        tomorrow = today + 86400
+        today = time.localtime(today)
+        yesterday = time.localtime(yesterday)
+        tomorrow = time.localtime(tomorrow)
+
+        fn = self.fnFromDate(today)
+        assert not os.path.exists(fn), 'Comic page for today already exists!'
+
+        d = os.path.dirname(fn)
+        if not os.path.isdir(d):
+            os.makedirs(d)
+
+        yesterdayUrl = self.getUrlFromFilename(self.fnFromDate(yesterday))
+        tomorrowUrl = self.getUrlFromFilename(self.fnFromDate(tomorrow))
+
+        self.html = file(fn, 'w')
+        self.html.write('''<html>
+<head>
+<title>Comics for %s</title>
+</head>
+<body>
+<a href="%s">Previous Day</a> | <a href="%s">Next Day</a>
+''' % (time.strftime('%Y/%m/%d', today), yesterdayUrl, tomorrowUrl))
+
+        self.lastComic = None
+
+    def comicDownloaded(self, comic, filename):
+        if self.lastComic != comic:
+            self.newComic(comic)
+        url = self.getUrlFromFilename(filename)
+        self.html.write('''
+      <TR><TD><A HREF="%s"><IMG BORDER=0 SRC="%s"></A></TD></TR>
+''' % ( url, url))
+    def newComic(self, comic):
+        if self.lastComic is not None:
+            self.html.write('    </TABLE></TD></TR>\n')
+        self.lastComic = comic
+        self.html.write('''
+    <TR><TD ALIGN=CENTER>
+      <TABLE CELLSPACING=0 CELLPADDING=0 BORDER=0><TR>
+      <TD BGCOLOR=black ALIGN=CENTER><FONT FACE="Arial,Helvetica" SIZE=+1 COLOR=white><B>%s</TD></TR>
+''' % (comic, ))
+
+    def end(self):
+        if self.lastComic is not None:
+            self.html.write('    </TABLE></TD></TR>\n')
+        self.html.write('''</TABLE>
+</body>
+</html>''')
+        self.html.close()
+
+
 handlers = {
     'html': HtmlEventHandler,
+    'ehtml': EHtmlEventHandler,
     'rss': RSSEventHandler,
 }
 
